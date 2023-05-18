@@ -216,3 +216,17 @@ def solution(nums):
 
     
     return "".join(solution)
+
+
+def nb_year(p0, percent, aug, p):
+    """In a small town the population is p0 at the beginning of a year. 
+    The population regularly increases by a percent per year and 
+    moreover new inhabitants(aug) per year come to live in the town. 
+    How many years does the town need to see its population greater or equal to p?"""
+    years = 0
+    
+    while p0 < p:
+        p0 = int(p0 + (p0 * (percent / 100)) + aug)
+        years += 1
+        
+    return years
