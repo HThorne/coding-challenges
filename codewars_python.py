@@ -111,3 +111,108 @@ def pig_it(text):
             words[i] = word
         
     return ' '.join(words)
+
+
+# First attempt
+def make_readable(seconds):
+    """Take a non-negative integer (seconds) as input.
+    Returns the time in a human-readable format (HH:MM:SS)"""
+    hours = (seconds // 60) // 60
+    minutes = (seconds // 60) % 60
+    seconds = seconds % 60
+    
+    # Handle if number is less than 10 needing zero in front
+    if hours < 10:
+        hours = f"0{hours}"
+    if minutes < 10:
+        minutes = f"0{minutes}"
+    if seconds < 10:
+        seconds = f"0{seconds}"
+    
+    return f"{hours}:{minutes}:{seconds}"
+
+
+# Second attempt 
+def make_readable(seconds):
+    """Take a non-negative integer (seconds) as input.
+    Returns the time in a human-readable format (HH:MM:SS)"""
+    
+    return f"{seconds // 3600:02}:{(seconds // 60) % 60:02}:{seconds % 60:02}"
+
+
+def rgb(r, g, b):
+    """Take RGB decimal values and convert it into a hexadecimal representation being returned. 
+    Valid decimal values for RGB are 0 - 255. Any values that fall out of that range must be rounded to the closest valid value."""
+    conversion_table = {0:"0", 1:"1", 2:"2", 3:"3", 4:"4", 5:"5", 6:"6", 7:"7", 8:"8", 9:"9", 10:"A", 11:"B", 12:"C", 13:"D", 14:"E", 15:"F"}
+    rgb = [r, g, b]
+    hexadec = ''
+    
+    for value in rgb:
+        if value > 255:
+            value = 255
+        if value < 0:
+            value = 0
+        hexadec += f'{conversion_table[value // 16]}{conversion_table[value % 16]}'
+        
+    return hexadec
+
+
+def snail(snail_maps):
+    """Given an array of arrays, return the array elements arranged from outermost elements to the middle element, traveling clockwise."""
+    snail = []
+    
+    while len(snail_maps) > 0:
+        if len(snail_maps) == 1:           # Account for last list
+            snail.extend(snail_maps[0])
+            break
+        
+        snail.extend(snail_maps[0])    # Add entire top list in order and then remove
+        snail_maps.pop(0)
+        
+        for snail_map in snail_maps:      # Loop adding and removing last element in each list
+            snail.append(snail_map[-1])
+            snail_map.pop()
+        
+        snail.extend(snail_maps[-1][::-1])  # Add entire bottom list in reverse order and then remove
+        snail_maps.pop()
+        
+        
+        for snail_map in snail_maps[::-1]:  # Loop adding and removing first element in each list
+            snail.append(snail_map[0])
+            snail_map.pop(0)
+            
+    return snail
+
+
+def solution(nums):
+    """Take a list of integers in increasing order and returns a correctly formatted string in the range format.
+    
+    ex: solution([-10, -9, -8, -6, -3, -2, -1, 0, 1, 3, 4, 5, 7, 8, 9, 10, 11, 14, 15, 17, 18, 19, 20])
+    returns "-10--8,-6,-3-1,3-5,7-11,14,15,17-20"
+    """
+    solution = []     # Using an empty list rather than an empty str to make comparison easier
+
+    for i, num1 in enumerate(nums):
+        if len(solution) > 1 and num1 <= solution[-2]:  # Continue past any numbers that are already in a range
+            continue
+        
+        low_end = num1
+        high_end = num1
+        
+        if i + 1 < len(nums):             # Find end of consecutive range of numbers
+            for num2 in nums[i + 1:]:
+                if num2 == high_end + 1:
+                    high_end = num2
+        
+        if low_end == high_end or high_end == low_end + 1:  # This accounts for numbers outside any ranges
+            solution.extend([num1, ','])
+        else:
+            solution.extend([low_end, '-', high_end, ","])
+    
+    solution.pop()       # Remove trailing comma
+    
+    for i, num3 in enumerate(solution):    # Convert all numeric to strings so they can be joined
+        solution[i] = str(num3)
+
+    
+    return "".join(solution)
